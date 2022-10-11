@@ -1,0 +1,29 @@
+{
+  "name": "@evalu8/next",
+  "version": "0.0.1",
+  "description": "evalu8 plugin for nextjs",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "sideEffects": false,
+  "author": "Maximilian Kaske",
+  "license": "MIT",
+  "files": [
+    "dist/**"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsup",
+    "dev": "tsup --watch"
+  },
+  "devDependencies": {
+    "@upstash/redis": "^1.13.1",
+    "crypto": "^1.0.1",
+    "tsup": "^6.2.3"
+  },
+  "peerDependencies": {
+    "next": "^12.3.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  }
+}

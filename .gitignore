@@ -31,3 +31,9 @@ yarn-error.log*
 
 # turbo
 .turbo
+
+# contentlayer
+.contentlayer
+
+# package distribution
+dist

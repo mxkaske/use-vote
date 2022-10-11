@@ -1,0 +1,7 @@
+{
+  "presets": ["next/babel"],
+  "plugins": [
+    // https://github.com/blitz-js/superjson#using-with-nextjs
+    // "superjson-next" // serialize JSON Date
+  ]
+}
