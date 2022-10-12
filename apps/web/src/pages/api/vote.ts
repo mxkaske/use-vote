@@ -1,6 +1,5 @@
 import { NextRequest, userAgent } from "next/server";
 import { Redis } from "@upstash/redis";
-import crypto from "crypto";
 import { z } from "zod";
 import { Rating } from "../../utils/types";
 import { processData } from "../../utils/stats";
@@ -53,13 +52,6 @@ export default async function handler(req: NextRequest) {
           `${hostname}:pages`,
           pathname || "root"
         );
-        console.log({
-          exist,
-          ip: req.ip,
-          geo: req.geo,
-          ua: userAgent(req),
-          user: req.ip && crypto.createHash("md5").update(req.ip).digest("hex"),
-        });
         if (!exist) {
           await redis.hsetnx(`${hostname}:pages`, pathname || "root", {
             url: `${hostname}${pathname || ""}`,
@@ -67,7 +59,8 @@ export default async function handler(req: NextRequest) {
           });
         }
         const member: Rating = {
-          user: req.ip && crypto.createHash("md5").update(req.ip).digest("hex"),
+          user: "", // req.ip, // FIXME: do not display private IP - https://vercel.com/templates/next.js/edge-functions-crypto
+          // use only crypto internal api, not the npm package!
           geo: req.geo,
           ua: userAgent(req),
           // TODO: FIXME: update prop - For possible future extension, keep it generic
