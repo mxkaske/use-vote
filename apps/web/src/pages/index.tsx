@@ -5,11 +5,13 @@ import Thumbs from "../components/widgets/Thumbs";
 const HomePage = () => {
   return (
     <Layout>
-      <h1 className="italic">Welcome to `/`</h1>
-      <Link href="/subpage">
-        <a>Go to Subpage</a>
-      </Link>
-      <Thumbs />
+      <div className="prose">
+        <h1 className="italic">Welcome to `/`</h1>
+        <Link href="/subpage">
+          <a>Go to Subpage</a>
+        </Link>
+        <Thumbs />
+      </div>
     </Layout>
   );
 };

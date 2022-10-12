@@ -1,5 +1,5 @@
 import React from "react";
-import { useVote } from "@evalu8/next";
+import { useVote } from "@use-vote/next";
 import ThumbsDownIcon from "../../icons/ThumbsDownIcon";
 import ThumbsUpIcon from "../../icons/ThumbsUpIcon";
 
@@ -12,7 +12,7 @@ const Thumbs = () => {
     : "Is this page useful?";
 
   return (
-    <div className="flex flex-wrap justify-between items-center space-x-3">
+    <div className="not-prose flex flex-wrap justify-between items-center space-x-3">
       <p className="text-lg font-semibold">{text}</p>
       {!isCompleted && (
         <div className="flex space-x-1">

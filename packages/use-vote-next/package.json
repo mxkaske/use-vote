@@ -1,7 +1,7 @@
 {
-  "name": "@evalu8/next",
+  "name": "@use-vote/next",
   "version": "0.0.1",
-  "description": "evalu8 plugin for nextjs",
+  "description": "useVote plugin for nextjs",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",

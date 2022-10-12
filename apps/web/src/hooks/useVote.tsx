@@ -1,6 +1,6 @@
 import React from "react";
 
-const apiPath = `/api/evalu8`;
+const apiPath = `/api/vote`;
 
 type VoteStatus = "waiting" | "loading" | "completed";
 

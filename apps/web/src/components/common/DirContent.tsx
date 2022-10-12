@@ -7,6 +7,7 @@ import cn from "classnames";
 const DirContent = ({ contents }: { contents?: Content[] }) => {
   const router = useRouter();
   return (
+    // TODO: DISCUSS: with or without `space-y-2`?
     <nav className="list-none border-l border-gray-200 space-y-2">
       {contents?.map((c) => {
         const active = router.asPath === c.path.url;

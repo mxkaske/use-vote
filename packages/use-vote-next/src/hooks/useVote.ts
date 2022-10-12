@@ -5,7 +5,7 @@ interface UseVoteInterface {
   apiPath?: string;
 }
 
-const useVote = ({ apiPath = `/api/evalu8` }: UseVoteInterface) => {
+const useVote = ({ apiPath = `/api/vote` }: UseVoteInterface) => {
   const [status, setStatus] = React.useState<VoteStatus>("waiting");
   const vote = async (rating: string) => {
     setStatus("loading");

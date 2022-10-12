@@ -4,7 +4,7 @@ import { Page } from "../utils/types";
 
 type Data = Page & { data: ProcessData };
 
-const apiPath = `/api/evalu8`;
+const apiPath = `/api/vote`;
 
 const useStats = () => {
   // FIXME: change to [stats, setStats]
