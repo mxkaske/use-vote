@@ -53,7 +53,7 @@ export default async function handler(req: NextRequest) {
           `${hostname}:pages`,
           pathname || "root"
         );
-        console.log({ exist });
+        console.log({ exist, ip: req.ip, geo: req.geo, ua: userAgent(req) });
         if (!exist) {
           await redis.hsetnx(`${hostname}:pages`, pathname || "root", {
             url: `${hostname}${pathname || ""}`,
