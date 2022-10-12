@@ -9,7 +9,7 @@ const Chart = dynamic(() => import("../components/charts/StackedAreaChart"), {
 
 // TODO: check about if the page should be styled with tailwindcss or not
 
-const Stats = () => {
+const Analytics = () => {
   const [data] = useStats();
   console.log(data);
   return (
@@ -56,4 +56,4 @@ const Stats = () => {
   );
 };
 
-export default Stats;
+export default Analytics;

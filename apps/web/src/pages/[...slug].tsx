@@ -2,10 +2,8 @@ import React from "react";
 import { allContents, Content } from "contentlayer/generated";
 import { GetStaticPropsContext, InferGetStaticPropsType } from "next";
 import Layout from "src/components/common/Layout";
-import Thumbs from "src/components/widgets/Thumbs";
-import TOC from "src/components/common/TOC";
 import { useRef } from "react";
-import DirContent from "src/components/common/DirContent";
+import SideBar from "src/components/common/SideBar";
 
 const ContentPage = ({
   content,
@@ -24,7 +22,7 @@ const ContentPage = ({
 
   return (
     <Layout>
-      <div className="flex min-h-max gap-8">
+      <div className="flex min-h-max gap-8 mb-16">
         <div className="overflow-auto">
           {content && (
             <div
@@ -35,9 +33,11 @@ const ContentPage = ({
           )}
         </div>
         {/* TODO: create a Twitter thread about that! */}
-        <div className="sticky top-0 self-start space-y-6 -mt-8 pt-8">
-          <DirContent contents={dirContent} />
-          <Thumbs />
+        <div
+          key={content?._id}
+          className="sticky top-0 self-start space-y-6 -mt-8 pt-8 hidden md:block"
+        >
+          <SideBar contents={dirContent} />
         </div>
       </div>
     </Layout>
