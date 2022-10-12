@@ -53,6 +53,7 @@ export default async function handler(req: NextRequest) {
           `${hostname}:pages`,
           pathname || "root"
         );
+        console.log({ exist });
         if (!exist) {
           await redis.hsetnx(`${hostname}:pages`, pathname || "root", {
             url: `${hostname}${pathname || ""}`,
@@ -67,6 +68,7 @@ export default async function handler(req: NextRequest) {
           rating: validate.data.rating, // FIXME: instead of `rating`, call it `data`
           timestamp: Date.now(),
         };
+        console.log({ member });
         await redis.zadd(`${hostname}:ratings:${pathname || "root"}`, {
           score: Date.now(),
           member,
