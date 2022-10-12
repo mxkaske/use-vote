@@ -22,12 +22,12 @@ const ContentPage = ({
 
   return (
     <Layout>
-      <div className="flex min-h-max gap-8 mb-16">
-        <div className="overflow-auto">
+      <div className="flex min-h-max gap-8">
+        <div className="overflow-auto prose prose-img:rounded-md">
+          <h1>{content?.title}</h1>
           {content && (
             <div
               ref={ref}
-              className="prose"
               dangerouslySetInnerHTML={{ __html: content?.body.html }}
             />
           )}
@@ -35,7 +35,7 @@ const ContentPage = ({
         {/* TODO: create a Twitter thread about that! */}
         <div
           key={content?._id}
-          className="sticky top-0 self-start space-y-6 -mt-8 pt-8 hidden md:block"
+          className="sticky top-0 self-start space-y-6 -mt-16 pt-16 hidden md:block"
         >
           <SideBar contents={dirContent} />
         </div>

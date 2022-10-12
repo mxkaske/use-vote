@@ -3,23 +3,72 @@ title: "Getting Started"
 date: "2022-10-10"
 ---
 
-## Getting Started
+> This npm packages supports `next` and **is not** a pure `react` package.
 
-### Lorem Ipsum
+We have an npm package that allows you to add your own voting system on your website.
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus in ornare leo. Nulla blandit convallis felis vel gravida. Proin non nunc ut turpis molestie malesuada sit amet et odio. Praesent nec consectetur nisl, at tempor dolor. Donec quis lorem sed purus rhoncus pulvinar at id lectus. Sed bibendum aliquet semper. Duis consequat ornare ex, eget feugiat arcu. Quisque consectetur massa quis nunc vestibulum, ut facilisis magna bibendum. Morbi in lobortis velit. Aliquam ac suscipit enim. Sed quis sodales tellus, ac fringilla lorem. Nulla eros lectus, consequat vitae nisi vitae, pretium faucibus quam. Sed commodo mi at turpis mollis, at posuere lectus vulputate. Nunc dictum massa in dui elementum cursus.
+To use it, first install the package:
 
-## Second Header
-
-Suspendisse ut magna ipsum. Suspendisse semper arcu vel nisl euismod auctor. Vestibulum nibh massa, auctor non arcu sit amet, vulputate venenatis tortor. Maecenas luctus lorem nec magna rutrum faucibus. Donec quis scelerisque nulla. Integer eu ultrices ex, elementum rutrum nisi. Phasellus dapibus euismod velit, ac interdum magna tincidunt sit amet. In hendrerit in augue ac pulvinar. Praesent orci justo, sodales nec leo in, ullamcorper luctus tellus. Donec vehicula, diam nec porttitor pretium, felis odio fringilla purus, a tincidunt eros dui ac arcu. Nulla eget odio nec odio rutrum tempus. Duis ultrices est eu sapien tristique, id pellentesque mauris aliquam. Aliquam nunc mauris, tempor vel eros quis, elementum placerat lacus. Sed sagittis mauris ac quam tempus, quis porttitor lorem vehicula.
-
-```shell
-$ npm install @use-vote/next
+```bash
+$ npm install @mxkaske/use-vote
 ```
 
-```ts
+Once installed, there are 4 steps to follow:
+
+1. Create a new upstash project
+2. Add `.env` variables
+3. Create an `api` route to retrieve the data
+4. Use the headless `useVote` hook.
+
+## 1. Create a new upstash project
+
+If you don’t already have an [upstash](https://upstash.com) account, create one first. They have a generous free plan to start with. Create a new Redis database and fill out the asked inputs.
+
+![upstash-create-project.png](/assets/upstash-create-project.png)
+
+## 2. Add `.env` variables
+
+You can easily copy and paste the `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` into your `.env.local` file to start with.
+
+![upstash-api-keys.png](/assets/upstash-api-keys.png)
+
+```bash
+// .env.local
+UPSTASH_REDIS_REST_URL=<YOUR_URL>
+UPSTASH_REDIS_REST_TOKEN=<YOUR_TOKEN>
+```
+
+> Do not expose your environment variables on GitHub.
+
+## 3. Create an `api` route to retrieve the data
+
+By default, `useVote` will use the `/api/vote` pathname to send new votings. We encourage you to keep the folder path to not have to pass manually the new path:
+
+```tsx
 // pages/api/vote.ts
-import { createAPI } from "@use-vote/next";
+import { createVoteAPI } from "@mxkaske/use-vote";
 
-export default createAPI();
+const createVoteAPI()
+
+export default createVoteAPI()
 ```
+
+## 4. Use the headless `useVote` hook.
+
+You can now transmit your vote to the `/api/vote` on click via the `vote()` function. Read more at [/docs/use-vote](/docs/use-vote).
+
+```tsx
+import { useVote } from "@mxkaske/use-vote";
+import React from "react";
+
+const VoteButton = ({ label, icon }: { label: string; icon: string }) => {
+  const { vote } = useVote({});
+  return <Button onClick={() => vote(icon)}>{label}</Button>;
+};
+```
+
+You are already collecting data.
+
+---
+
+Check our examples [thumbs](/examples/thumbs) or [stars](/examples/stars).
