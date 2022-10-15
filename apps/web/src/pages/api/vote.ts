@@ -1,8 +1,12 @@
-import { NextRequest, userAgent } from "next/server";
+import { NextRequest, NextResponse, userAgent } from "next/server";
 import { Redis } from "@upstash/redis";
+import { Ratelimit } from "@upstash/ratelimit";
 import { z } from "zod";
 import { Rating } from "../../utils/types";
 import { processData } from "../../utils/stats";
+import { NextApiRequest, NextApiResponse } from "next";
+import parser from "ua-parser-js";
+import requestIp from "request-ip";
 
 const validateBodyRequest = (body: unknown) => {
   return z
@@ -12,15 +16,31 @@ const validateBodyRequest = (body: unknown) => {
     .safeParse(body);
 };
 
-export const config = {
-  runtime: "experimental-edge",
-};
+const redis = Redis.fromEnv();
 
-export default async function handler(req: NextRequest) {
+const ratelimit = new Ratelimit({
+  redis,
+  // different limiter possible. e.g. tokenBucket
+  // avoid DDos, max. 10 request every 10 seconds
+  limiter: Ratelimit.slidingWindow(10, "10 s"),
+});
+
+// REMINDER: makes the whole handler to run on the edge
+// edge: NextRequest, server: NextApiRequest
+// export const config = {
+//   runtime: "experimental-edge",
+// };
+// REMINDER: removing edge will disable req.geo and
+// get the users location easily
+
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   try {
-    const redis = Redis.fromEnv();
-    const pathname = req.nextUrl.searchParams.get("pathname");
-    const hostname = req.nextUrl.searchParams.get("hostname");
+    const pathname = req.query.pathname as string;
+    const hostname = req.query.hostname as string;
+
     switch (req.method) {
       case "GET": {
         const pages = await redis.hgetall(`${hostname}:pages`);
@@ -31,21 +51,39 @@ export default async function handler(req: NextRequest) {
           });
           const results = (await pipeline.exec()) as Rating[][];
           Object.keys(pages).forEach((key, index) => {
-            // @ts-ignore
+            // @ts-ignore TODO: remove
             pages[key]["ratings"] = results[index];
-            const data = processData({ data: results[index] }); // TODO: all interesting stuff!
+            // REMINDER: all interesting stuff!
+            const data = processData({ data: results[index] });
             // @ts-ignore
             pages[key]["data"] = data;
           });
-          return new Response(JSON.stringify(pages), { status: 200 });
+          // TODO: sort pages by zcount
+          // TODO: instead of returing
+          // { key: Data, ... }, return
+          // a sorted array with key included.
+          //
+          return res.status(200).json(pages);
         }
-        return new Response(JSON.stringify({}), { status: 200 });
+        return res.status(200).end();
       }
       case "PATCH": {
-        const json = await req.json();
-        const validate = validateBodyRequest(json);
+        // TODO: extract into separate component
+        // TODO: make the ratelimit not mandatory
+        const result = await ratelimit.limit("api");
+        res.setHeader("X-RateLimit-Limit", result.limit);
+        res.setHeader("X-RateLimit-Remaining", result.remaining);
+        console.log(result);
+        if (!result.success) {
+          return res.status(200).json({
+            message: "The request has been rate limited.",
+            rateLimitState: result,
+          });
+        }
+        //
+        const validate = validateBodyRequest(req.body);
         if (!validate.success) {
-          return new Response("Invalid Data", { status: 422 });
+          return res.status(422).end("Invalid Data");
         }
         // check if hashmap includes the pathname
         const exist = await redis.hexists(
@@ -58,31 +96,24 @@ export default async function handler(req: NextRequest) {
             timestamp: Date.now(),
           });
         }
-        const member: Rating = {
-          user: "", // req.ip, // FIXME: do not display private IP - https://vercel.com/templates/next.js/edge-functions-crypto
-          // use only crypto internal api, not the npm package!
-          geo: req.geo,
-          ua: userAgent(req),
+        const rate: Rating = {
+          user: requestIp.getClientIp(req) || "", // req.ip, // FIXME: do not display private IP - https://vercel.com/templates/next.js/edge-functions-crypto
+          ua: parser(req.headers["user-agent"]),
           // TODO: FIXME: update prop - For possible future extension, keep it generic
           rating: validate.data.rating, // FIXME: instead of `rating`, call it `data`
           timestamp: Date.now(),
         };
-        console.log({ member });
         await redis.zadd(`${hostname}:ratings:${pathname || "root"}`, {
           score: Date.now(),
-          member,
+          member: rate,
         });
-        return new Response(JSON.stringify({ ok: "OK" }), { status: 200 });
+        return res.status(200).json({ ok: "OK" });
       }
       default: {
-        // return res.status(405).end(`Method ${req.method} Not Allowed.`);
-        return new Response(`Method ${req.method} Not Allowed`, {
-          status: 405,
-        });
+        return res.status(405).end(`Method ${req.method} Not Allowed.`);
       }
     }
   } catch (error) {
-    // return res.status(500).json({ error });
-    return new Response(JSON.stringify({ error }), { status: 500 });
+    return res.status(500).json({ error });
   }
 }

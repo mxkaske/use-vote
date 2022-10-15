@@ -1,10 +1,10 @@
 import { NextRequest, userAgent } from "next/server";
+import parser from "ua-parser-js";
 
 export type Rating = {
   user: NextRequest["ip"];
-  geo: NextRequest["geo"];
   timestamp: number;
-  ua: ReturnType<typeof userAgent>;
+  ua: ReturnType<typeof parser>;
   rating: string;
 };
 

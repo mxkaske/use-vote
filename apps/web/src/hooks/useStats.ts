@@ -2,6 +2,8 @@ import React from "react";
 import { ProcessData } from "src/utils/stats";
 import { Page } from "../utils/types";
 
+// TODO: validate returned data with zod
+
 type Data = Page & { data: ProcessData };
 
 const apiPath = `/api/vote`;
@@ -27,6 +29,7 @@ const useStats = () => {
       console.error(err);
     }
   };
+
   return [data];
 };
 

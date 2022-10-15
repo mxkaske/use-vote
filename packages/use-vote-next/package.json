@@ -19,7 +19,8 @@
   "devDependencies": {
     "@upstash/redis": "^1.13.1",
     "crypto": "^1.0.1",
-    "tsup": "^6.2.3"
+    "tsup": "^6.2.3",
+    "zod": "^3.19.1"
   },
   "peerDependencies": {
     "next": "^12.3.1",

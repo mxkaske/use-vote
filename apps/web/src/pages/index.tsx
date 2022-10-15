@@ -7,9 +7,6 @@ const HomePage = () => {
     <Layout>
       <div className="prose">
         <h1 className="italic">Welcome to `/`</h1>
-        <Link href="/subpage">
-          <a>Go to Subpage</a>
-        </Link>
         <Thumbs />
       </div>
     </Layout>
