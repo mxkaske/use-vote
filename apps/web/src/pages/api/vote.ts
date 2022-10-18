@@ -53,10 +53,12 @@ export default async function handler(
           const array: RequestReturnType[] = [];
           Object.keys(pages).forEach((key, index) => {
             const data = processData({ data: results[index] });
+            // TODO: remove baseData from here, should be returned from data
             array.push({ ...data, baseData: pages[key] as Page });
           });
-          array.sort((a, b) =>
-            a.totalData.count > b.totalData.count ? -1 : 1
+          array.sort(
+            (a, b) => (a.totalData.count > b.totalData.count ? -1 : 1)
+            // TODO: also sort by alphabet, otherwise random
           );
           return res.status(200).json(array);
         }

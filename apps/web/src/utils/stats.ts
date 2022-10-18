@@ -64,6 +64,7 @@ export const processData = ({ data }: { data: Rating[] }) => {
     totalData,
     startTimestamp,
     endTimestamp,
+    // TODO: refactor: with baseData!
   };
 };
 
