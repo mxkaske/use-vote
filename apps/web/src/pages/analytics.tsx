@@ -2,7 +2,7 @@ import React from "react";
 import Layout from "../components/common/Layout";
 import dynamic from "next/dynamic";
 import useStats from "../hooks/useStats";
-import { Disclosure } from "@headlessui/react";
+import { Disclosure, Transition } from "@headlessui/react";
 import { Interval } from "src/utils/types";
 import cn from "classnames";
 import { default as ColorHash } from "color-hash";

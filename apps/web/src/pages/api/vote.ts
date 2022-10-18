@@ -39,8 +39,8 @@ export default async function handler(
 ) {
   try {
     const pathname = req.query.pathname as string;
-    const hostname = req.query.hostname as string;
-    const interval = req.query.interval as Interval; // FIXME: how to prevent fraud?
+    const hostname = req.query.hostname as string; // TODO: should be removed...? or at least not mandatory
+    const interval = req.query.interval as Interval; // FIXME: how to prevent invalid data
 
     switch (req.method) {
       case "GET": {
