@@ -5,6 +5,18 @@ import useStats from "../hooks/useStats";
 import { Disclosure } from "@headlessui/react";
 import { Interval } from "src/utils/types";
 import cn from "classnames";
+import { default as ColorHash } from "color-hash";
+
+var customHash = function (str: string) {
+  var hash = 0;
+  for (var i = 0; i < str.length; i++) {
+    const chr = str.charCodeAt(i);
+    hash = (hash << 5) - hash + chr;
+    hash |= 0; // Convert to 32bit integer
+  }
+  return hash;
+};
+var colorHash = new ColorHash({ hash: customHash });
 
 const Chart = dynamic(() => import("../components/charts/StackedAreaChart"), {
   ssr: false,
@@ -51,20 +63,15 @@ const Analytics = () => {
           {/* TODO: create some sort of skeleton here */}
           {data?.map((value) => {
             const percentage = value.totalData.count / maxValue;
-            const intervalTotal =
-              value.accIntervalData[value.accIntervalData.length - 1].count;
+            const { count: intervalTotal, rateData } =
+              value.accIntervalData[value.accIntervalData.length - 1];
             const intervalPercentage = intervalTotal / maxIntervalValue;
-
-            console.log({
-              percentage,
-              maxValue,
-              maxIntervalValue,
-              intervalTotal,
-              intervalPercentage,
-            });
             return (
               <Disclosure as="li" key={value.baseData.url}>
-                <Disclosure.Button className="block w-full my-2">
+                <Disclosure.Button
+                  className="block w-full my-2"
+                  disabled={intervalTotal === 0}
+                >
                   {({ open }) => (
                     <div className="group relative flex items-center justify-between px-2 py-1">
                       <code>{value.baseData.url}</code>
@@ -79,30 +86,59 @@ const Analytics = () => {
                             : "bg-gray-200 group-hover:bg-gray-300"
                         )}
                       />
+                      <div
+                        style={{
+                          width: open ? `${intervalPercentage * 100}%` : 0,
+                        }}
+                        className="transition-[width] duration-1000 absolute w-full h-full z-[-1] -my-1 -mx-2 rounded-md overflow-hidden flex"
+                      >
+                        {Object.entries(rateData).map(([key, entry], i) => {
+                          const percentage = entry / intervalTotal;
+                          return (
+                            <div
+                              key={key}
+                              style={{
+                                width: `${percentage * 100}%`,
+                                backgroundColor: colorHash.hex(key),
+                                opacity: `${
+                                  1 - i / Object.keys(rateData).length
+                                }`,
+                              }}
+                              className="h-full"
+                            ></div>
+                          );
+                        })}
+                      </div>
                     </div>
                   )}
                 </Disclosure.Button>
                 <Disclosure.Panel className="text-gray-500">
-                  <div className="p-2">
-                    <div>
-                      {value.accIntervalData.length > 0 &&
-                        Object.entries(
-                          value.accIntervalData[
-                            value.accIntervalData.length - 1
-                          ].rateData
-                        ).map(([key, value]) => {
-                          return (
-                            <div key={key} className="">
-                              <p>
-                                {key}:{" "}
-                                <span className="font-bold">{value}</span>
-                              </p>
-                            </div>
-                          );
-                        })}
-                    </div>
-                    <Chart data={value.accIntervalData} interval={interval} />
+                  <div className="flex gap-4 items-center">
+                    {/* FIXME: reason because it jumps: the key either changes, or automatically gets unmounted as no accIntervalData has been found */}
+                    {value.accIntervalData.length > 0 &&
+                      Object.entries(
+                        value.accIntervalData[value.accIntervalData.length - 1]
+                          .rateData
+                      ).map(([key, value], i) => {
+                        return (
+                          <div key={key} className="flex items-center gap-2">
+                            <div
+                              style={{
+                                backgroundColor: colorHash.hex(key),
+                                opacity: `${
+                                  1 - i / Object.keys(rateData).length
+                                }`,
+                              }}
+                              className="h-4 w-4 rounded-full"
+                            />
+                            <p>
+                              {key}: <span className="font-bold">{value}</span>
+                            </p>
+                          </div>
+                        );
+                      })}
                   </div>
+                  {/* <Chart data={value.accIntervalData} interval={interval} /> */}
                 </Disclosure.Panel>
               </Disclosure>
             );
