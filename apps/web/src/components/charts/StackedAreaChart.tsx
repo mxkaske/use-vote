@@ -8,7 +8,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { Rating } from "src/utils/types";
+import { Interval, Rating } from "src/utils/types";
 import { getTimeIntervals, intervalData } from "../../utils/interval";
 
 // IDEA: compose to types of charts in one (https://recharts.org/en-US/examples/LineBarAreaComposedChart)
@@ -32,10 +32,11 @@ interface Props {
     start: number;
     end: number;
   }[];
+  interval: Interval;
 }
 
-const StackedAreaChart = ({ data }: Props) => {
-  const { format } = intervalData["7d"];
+const StackedAreaChart = ({ data, interval }: Props) => {
+  const { format } = intervalData[interval];
   const mappedData = data.map((d) => {
     return {
       name: format(d.start),

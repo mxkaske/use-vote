@@ -2,7 +2,7 @@ import { NextRequest, NextResponse, userAgent } from "next/server";
 import { Redis } from "@upstash/redis";
 import { Ratelimit } from "@upstash/ratelimit";
 import { z } from "zod";
-import { Rating, Page, RequestReturnType } from "../../utils/types";
+import { Rating, Page, RequestReturnType, Interval } from "../../utils/types";
 import { processData, ProcessDataType } from "../../utils/stats";
 import { NextApiRequest, NextApiResponse } from "next";
 import parser from "ua-parser-js";
@@ -40,6 +40,7 @@ export default async function handler(
   try {
     const pathname = req.query.pathname as string;
     const hostname = req.query.hostname as string;
+    const interval = req.query.interval as Interval; // FIXME: how to prevent fraud?
 
     switch (req.method) {
       case "GET": {
@@ -52,7 +53,7 @@ export default async function handler(
           const results = (await pipeline.exec()) as Rating[][];
           const array: RequestReturnType[] = [];
           Object.keys(pages).forEach((key, index) => {
-            const data = processData({ data: results[index] });
+            const data = processData({ data: results[index], interval });
             // TODO: remove baseData from here, should be returned from data
             array.push({ ...data, baseData: pages[key] as Page });
           });
@@ -70,7 +71,6 @@ export default async function handler(
         const result = await ratelimit.limit("api");
         res.setHeader("X-RateLimit-Limit", result.limit);
         res.setHeader("X-RateLimit-Remaining", result.remaining);
-        console.log(result);
         if (!result.success) {
           return res.status(200).json({
             message: "The request has been rate limited.",

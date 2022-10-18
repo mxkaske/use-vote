@@ -3,6 +3,8 @@ import Layout from "../components/common/Layout";
 import dynamic from "next/dynamic";
 import useStats from "../hooks/useStats";
 import { Disclosure } from "@headlessui/react";
+import { Interval } from "src/utils/types";
+import cn from "classnames";
 
 const Chart = dynamic(() => import("../components/charts/StackedAreaChart"), {
   ssr: false,
@@ -11,106 +13,102 @@ const Chart = dynamic(() => import("../components/charts/StackedAreaChart"), {
 // TODO: check about if the page should be styled with tailwindcss or not
 
 const Analytics = () => {
-  const [data] = useStats();
-  const [timeframe, setTimeframe] = React.useState<"7d" | "30d">("7d");
+  const [interval, setInterval] = React.useState<Interval>("7d");
+  const { state, data } = useStats({ interval });
   const maxValue =
     data?.reduce((prev, curr) => {
       return prev > curr.totalData.count ? prev : curr.totalData.count;
     }, 0) || 0;
 
+  const maxIntervalValue =
+    data?.reduce((prev, curr) => {
+      const c = curr.accIntervalData[curr.accIntervalData.length - 1].count;
+      return prev > c ? prev : c;
+    }, 0) || 0;
+
   return (
     <Layout>
       <h1 className="text-3xl font-extrabold mb-6">Analytics</h1>
-      <ul className="flex gap-3">
-        {(["7d", "30d"] as const).map((key) => {
-          return (
-            <button
-              key={key}
-              onClick={() => setTimeframe(key)}
-              className="px-4 py-1 rounded-full bg-gray-200"
-            >
-              {key}
-            </button>
-          );
-        })}
-      </ul>
-      <ul>
-        {data?.map((value) => {
-          return (
-            <Disclosure as="li" key={value.baseData.url}>
-              <Disclosure.Button className="block w-full my-2">
-                <div className="relative flex items-center justify-between px-2 py-1">
-                  <code>{value.baseData.url}</code>
-                  <p>{value.totalData.count}</p>
-                  <div
-                    style={{
-                      width: `${Math.round(
-                        (value.totalData.count / maxValue) * 100
-                      )}%`,
-                    }}
-                    className={`absolute h-full bg-gray-100 z-[-1] -my-1 -mx-2 rounded-md`}
-                  />
-                </div>
-              </Disclosure.Button>
-              <Disclosure.Panel className="text-gray-500">
-                <div className="p-2">
-                  <div>
-                    {value.accIntervalData.length > 0 &&
-                      Object.entries(
-                        value.accIntervalData[value.accIntervalData.length - 1]
-                          .rateData
-                      ).map(([key, value]) => {
-                        return (
-                          <div key={key} className="">
-                            <p>
-                              {key}: <span className="font-bold">{value}</span>
-                            </p>
-                          </div>
-                        );
-                      })}
-                  </div>
-                  <Chart data={value.accIntervalData} />
-                </div>
-              </Disclosure.Panel>
-            </Disclosure>
-          );
-        })}
-        {/* {data &&
-          Object.entries(data).map(([key, value]) => {
+      <div className="space-y-6">
+        <ul className="flex gap-3">
+          {(["1h", "24h", "7d", "30d"] as const).map((key) => {
+            const active = key === interval;
             return (
-              <div key={key} className="-mx-2">
-                <div className="border p-2 rounded">
-                  <div className="flex justify-between items-center">
-                    <h2>{value.url}</h2>
-                    <p>
-                      total:{" "}
-                      <span className="font-bold">
-                        {value.data.totalData.count}
-                      </span>
-                    </p>
-                  </div>
-                  <div>
-                    {value.data.accIntervalData.length > 0 &&
-                      Object.entries(
-                        value.data.accIntervalData[
-                          value.data.accIntervalData.length - 1
-                        ].rateData
-                      ).map(([key, value]) => {
-                        return (
-                          <div key={key} className="">
-                            <p>
-                              {key}: <span className="font-bold">{value}</span>
-                            </p>
-                          </div>
-                        );
-                      })}
-                  </div>
-                  <Chart data={value.data.accIntervalData} />
-                </div>
-              </div>
+              <button
+                key={key}
+                onClick={() => setInterval(key)}
+                className={cn(
+                  "px-4 py-0.5 rounded-full",
+                  active ? "bg-gray-400" : "bg-gray-200 hover:bg-gray-300"
+                )}
+              >
+                {key}
+              </button>
             );
-          })} */}
-      </ul>
+          })}
+        </ul>
+        <ul>
+          {/* TODO: create some sort of skeleton here */}
+          {data?.map((value) => {
+            const percentage = value.totalData.count / maxValue;
+            const intervalTotal =
+              value.accIntervalData[value.accIntervalData.length - 1].count;
+            const intervalPercentage = intervalTotal / maxIntervalValue;
+
+            console.log({
+              percentage,
+              maxValue,
+              maxIntervalValue,
+              intervalTotal,
+              intervalPercentage,
+            });
+            return (
+              <Disclosure as="li" key={value.baseData.url}>
+                <Disclosure.Button className="block w-full my-2">
+                  {({ open }) => (
+                    <div className="group relative flex items-center justify-between px-2 py-1">
+                      <code>{value.baseData.url}</code>
+                      <p>{intervalTotal}</p>
+                      <div className="absolute w-full h-full bg-gray-50 z-[-1] -my-1 -mx-2 rounded-md" />
+                      <div
+                        style={{ width: `${intervalPercentage * 100}%` }}
+                        className={cn(
+                          "transition-[width] duration-1000 absolute h-full z-[-1] -my-1 -mx-2 rounded-md",
+                          open
+                            ? "bg-gray-300"
+                            : "bg-gray-200 group-hover:bg-gray-300"
+                        )}
+                      />
+                    </div>
+                  )}
+                </Disclosure.Button>
+                <Disclosure.Panel className="text-gray-500">
+                  <div className="p-2">
+                    <div>
+                      {value.accIntervalData.length > 0 &&
+                        Object.entries(
+                          value.accIntervalData[
+                            value.accIntervalData.length - 1
+                          ].rateData
+                        ).map(([key, value]) => {
+                          return (
+                            <div key={key} className="">
+                              <p>
+                                {key}:{" "}
+                                <span className="font-bold">{value}</span>
+                              </p>
+                            </div>
+                          );
+                        })}
+                    </div>
+                    <Chart data={value.accIntervalData} interval={interval} />
+                  </div>
+                </Disclosure.Panel>
+              </Disclosure>
+            );
+          })}
+        </ul>
+      </div>
     </Layout>
   );
 };
