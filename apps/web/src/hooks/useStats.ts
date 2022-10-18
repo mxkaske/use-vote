@@ -1,6 +1,6 @@
 import React from "react";
-import { ProcessData } from "src/utils/stats";
-import { Page } from "../utils/types";
+import { ProcessData, ProcessDataType } from "src/utils/stats";
+import { Page, RequestReturnType } from "../utils/types";
 
 // TODO: validate returned data with zod
 
@@ -10,7 +10,7 @@ const apiPath = `/api/vote`;
 
 const useStats = () => {
   // FIXME: change to [stats, setStats]
-  const [data, setData] = React.useState<Record<string, Data>>();
+  const [data, setData] = React.useState<RequestReturnType[]>();
   React.useEffect(() => {
     getData();
   }, []);
@@ -22,7 +22,7 @@ const useStats = () => {
         method: "GET",
       });
       if (!response.ok) return;
-      const data = (await response.json()) as Record<string, Data>;
+      const data = (await response.json()) as RequestReturnType[];
       setData(data);
       console.log(data);
     } catch (err) {

@@ -2,8 +2,8 @@ import { NextRequest, NextResponse, userAgent } from "next/server";
 import { Redis } from "@upstash/redis";
 import { Ratelimit } from "@upstash/ratelimit";
 import { z } from "zod";
-import { Rating } from "../../utils/types";
-import { processData } from "../../utils/stats";
+import { Rating, Page, RequestReturnType } from "../../utils/types";
+import { processData, ProcessDataType } from "../../utils/stats";
 import { NextApiRequest, NextApiResponse } from "next";
 import parser from "ua-parser-js";
 import requestIp from "request-ip";
@@ -50,20 +50,15 @@ export default async function handler(
             pipeline.zrange(`${hostname}:ratings:${page}`, 0, -1);
           });
           const results = (await pipeline.exec()) as Rating[][];
+          const array: RequestReturnType[] = [];
           Object.keys(pages).forEach((key, index) => {
-            // @ts-ignore TODO: remove
-            pages[key]["ratings"] = results[index];
-            // REMINDER: all interesting stuff!
             const data = processData({ data: results[index] });
-            // @ts-ignore
-            pages[key]["data"] = data;
+            array.push({ ...data, baseData: pages[key] as Page });
           });
-          // TODO: sort pages by zcount
-          // TODO: instead of returing
-          // { key: Data, ... }, return
-          // a sorted array with key included.
-          //
-          return res.status(200).json(pages);
+          array.sort((a, b) =>
+            a.totalData.count > b.totalData.count ? -1 : 1
+          );
+          return res.status(200).json(array);
         }
         return res.status(200).end();
       }

@@ -2,6 +2,7 @@ import { getTimeIntervals } from "./interval";
 import { Rating } from "./types";
 
 // consider "👍", "👎" as default rating within "7d" interval
+// TODO: make the interval selectable
 
 const sortDataByRating = (data: Rating[]) => {
   return data.reduce<Record<string, number>>((prev, curr) => {
@@ -10,6 +11,8 @@ const sortDataByRating = (data: Rating[]) => {
     return prev;
   }, {});
 };
+
+export type ProcessDataType = ReturnType<typeof processData>;
 
 export const processData = ({ data }: { data: Rating[] }) => {
   const { startTimestamp, endTimestamp, timeIntervals } =
