@@ -41,7 +41,7 @@ const useStats = ({ interval = "7d" }: { interval?: Interval }) => {
       // FIXME: setTimeout with unsubscribe
       setTimeout(() => {
         setState(undefined);
-      }, 500);
+      }, 1000);
     }
   };
 
