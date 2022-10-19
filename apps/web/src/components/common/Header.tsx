@@ -1,5 +1,5 @@
+import Link from "../ui/Link";
 import React from "react";
-import Link from "next/link";
 import HamburgerIcon from "src/icons/HamburgerIcon";
 import Menu from "./Menu";
 
@@ -19,7 +19,7 @@ const Header = () => {
         <div className="flex gap-4 sm:gap-8 py-4">
           {links.map(({ href, label }) => (
             <Link key={href} href={href}>
-              <a href={href}>{label}</a>
+              {label}
             </Link>
           ))}
         </div>

@@ -2,11 +2,13 @@ import React from "react";
 import Layout from "../components/common/Layout";
 import dynamic from "next/dynamic";
 import useStats from "../hooks/useStats";
-import { Disclosure, Transition } from "@headlessui/react";
+import { Disclosure } from "@headlessui/react";
 import { Interval } from "src/utils/types";
 import cn from "classnames";
 import { default as ColorHash } from "color-hash";
 import crypto from "crypto";
+import { Backend } from "@use-vote/next";
+import { formatDistance } from "date-fns";
 
 var customHash = function (str: string) {
   const strHash = crypto.createHash("sha512").update(str).digest("hex");
@@ -44,6 +46,7 @@ const Analytics = () => {
 
   return (
     <Layout>
+      {/* <Backend /> */}
       <h1 className="text-3xl font-extrabold mb-6">Analytics</h1>
       <div className="space-y-8">
         <div className="space-y-3">
@@ -81,7 +84,7 @@ const Analytics = () => {
               return (
                 <Disclosure as="li" key={value.baseData.url}>
                   <Disclosure.Button
-                    className="block w-full my-2"
+                    className="block w-full my-3"
                     disabled={intervalTotal === 0}
                   >
                     {({ open }) => (
@@ -122,34 +125,42 @@ const Analytics = () => {
                       </div>
                     )}
                   </Disclosure.Button>
-                  <Disclosure.Panel className="text-gray-500">
+                  <Disclosure.Panel className="mb-6">
                     <div className="flex items-center justify-between gap-4">
-                      <div className="flex gap-4 items-center">
-                        {/* FIXME: reason because it jumps: the key either changes, or automatically gets unmounted as no accIntervalData has been found */}
-                        {Object.entries(rateData).map(([key, value], i) => {
-                          return (
-                            <div key={key} className="flex items-center gap-2">
+                      <div>
+                        <p className="font-bold text-xl">Data</p>
+                        <div className="flex gap-4 items-center">
+                          {/* FIXME: reason because it jumps: the key either changes, or automatically gets unmounted as no accIntervalData has been found */}
+                          {Object.entries(rateData).map(([key, value], i) => {
+                            return (
                               <div
-                                style={{
-                                  backgroundColor: colorHash.hex(key),
-                                }}
-                                className="h-4 w-4 rounded-full"
-                              />
-                              <p>
-                                {key}:{" "}
-                                <span className="font-bold">{value}</span>
-                              </p>
-                            </div>
-                          );
-                        })}
+                                key={key}
+                                className="flex items-center gap-2"
+                              >
+                                <div
+                                  style={{
+                                    backgroundColor: colorHash.hex(key),
+                                  }}
+                                  className="h-4 w-4 rounded-full"
+                                />
+                                <p>
+                                  {key}:{" "}
+                                  <span className="font-bold">{value}</span>
+                                </p>
+                              </div>
+                            );
+                          })}
+                        </div>
                       </div>
                       {rawData.length > 0 && (
                         <div className="text-right">
                           <p className="font-light text-sm">last created</p>
                           <p className="font-medium text-sm">
-                            {new Date(
-                              rawData[rawData.length - 1].timestamp
-                            ).toLocaleDateString()}
+                            {formatDistance(
+                              new Date(rawData[rawData.length - 1].timestamp), // get last data
+                              new Date(),
+                              { addSuffix: true }
+                            )}
                           </p>
                         </div>
                       )}
@@ -160,7 +171,7 @@ const Analytics = () => {
               );
             })
           ) : (
-            <div className="w-full flex flex-col gap-2">
+            <div className="w-full flex flex-col gap-3">
               <div className="w-full h-8 animate-pulse bg-gray-200 rounded-md" />
               <div className="w-full h-8 animate-pulse bg-gray-200 rounded-md" />
               <div className="w-full h-8 animate-pulse bg-gray-200 rounded-md" />

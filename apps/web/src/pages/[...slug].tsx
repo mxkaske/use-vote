@@ -23,14 +23,21 @@ const ContentPage = ({
   return (
     <Layout>
       <div className="flex min-h-max gap-8">
-        <div className="overflow-auto prose prose-img:rounded-md">
-          <h1>{content?.title}</h1>
-          {content && (
-            <div
-              ref={ref}
-              dangerouslySetInnerHTML={{ __html: content?.body.html }}
-            />
-          )}
+        <div className="overflow-auto">
+          {/* FIXME: check prose max width and extract and move h1/p our of prose */}
+          <div className="prose prose-img:rounded-md">
+            {/* DISCUSS: could be moved to # Heading 1 in the content body */}
+            <h1 className="text-4xl font-extrabold">{content?.title}</h1>
+            <p className="font-extralight pb-2 text-sm">
+              {content?.readingTime}
+            </p>
+            {content && (
+              <div
+                ref={ref}
+                dangerouslySetInnerHTML={{ __html: content?.body.html }}
+              />
+            )}
+          </div>
         </div>
         {/* TODO: create a Twitter thread about that! */}
         <div

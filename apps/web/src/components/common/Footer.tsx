@@ -1,5 +1,5 @@
-import Link from "next/link";
 import React from "react";
+import Link from "../ui/Link";
 
 const links = [
   { href: "/analytics", label: "Analytics" },
@@ -17,18 +17,14 @@ const Footer = () => {
       <ul className="flex gap-2 ">
         {links.map(({ href, label }) => (
           <li key={href}>
-            <Link href={href}>
-              <a href={href}>{label}</a>
-            </Link>
+            <Link href={href}>{label}</Link>
           </li>
         ))}
       </ul>
       <ul className="flex gap-2 pl-2">
         {community.map(({ href, label }) => (
           <li key={href}>
-            <a href={href} target="_blank" rel="noreferrer">
-              {label}
-            </a>
+            <Link href={href}>{label}</Link>
           </li>
         ))}
       </ul>

@@ -18,13 +18,13 @@ const Thumbs = () => {
         <div className="flex gap-1">
           <button
             onClick={() => vote("👍")}
-            className="p-2 rounded-full text-gray-800 hover:bg-gray-50 hover:text-gray-900"
+            className="transition active:rotate-[-12deg] p-2 border border-transparent hover:border-gray-400 rounded-full text-gray-600 hover:text-gray-800"
           >
             <ThumbsUpIcon />
           </button>
           <button
             onClick={() => vote("👎")}
-            className="p-2 rounded-full text-gray-800 hover:bg-gray-50 hover:text-gray-900"
+            className="transition active:rotate-[-12deg] p-2 border border-transparent hover:border-gray-400 rounded-full text-gray-600 hover:text-gray-800"
           >
             <ThumbsDownIcon />
           </button>
