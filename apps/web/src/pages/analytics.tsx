@@ -7,7 +7,8 @@ import { Interval } from "src/utils/types";
 import cn from "classnames";
 import { default as ColorHash } from "color-hash";
 import crypto from "crypto";
-import { Backend } from "@use-vote/next";
+// FIXME: deployment failed
+// import { Backend } from "@use-vote/next";
 import { formatDistance } from "date-fns";
 
 var customHash = function (str: string) {
