@@ -63,7 +63,8 @@ export default async function handler(
           );
           return res.status(200).json(array);
         }
-        return res.status(200).end();
+        // FIXME: debug
+        return res.status(404).end();
       }
       case "PATCH": {
         // TODO: extract into separate component
