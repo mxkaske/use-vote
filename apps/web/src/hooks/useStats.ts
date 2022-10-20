@@ -9,17 +9,10 @@ type Data = Page & { data: ProcessData };
 const apiPath = `/api/vote`;
 
 const useStats = ({ interval = "7d" }: { interval?: Interval }) => {
-  // FIXME: change to [stats, setStats]
-  const [state, setState] = React.useState<
-    undefined | "loading" | "success" | "error"
-  >();
-  const [data, setData] = React.useState<RequestReturnType[]>();
-  React.useEffect(() => {
-    getData();
-    // FIXME: how often will it be triggered?
-  }, [interval]);
+  const [state, setState] = React.useState<undefined | "loading" | "empty">(); // TODO: refactor with swr?
+  const [data, setData] = React.useState<RequestReturnType[] | undefined>();
 
-  const getData = async () => {
+  const getData = React.useCallback(async () => {
     setState("loading");
     try {
       const { hostname } = window.location;
@@ -29,21 +22,26 @@ const useStats = ({ interval = "7d" }: { interval?: Interval }) => {
           method: "GET",
         }
       );
-      if (!response.ok) return;
+      if (!response.ok) {
+        setData(undefined); // not sure if needed
+        // FIXME: BAD PATTERN!
+        setTimeout(() => {
+          setState("empty");
+        }, 1000);
+        return;
+      }
       const data = (await response.json()) as RequestReturnType[];
       setData(data);
-      console.log(data);
-      // setState("success");
+      setState(undefined);
     } catch (err) {
       console.error(err);
-      // setState("error");
-    } finally {
-      // FIXME: setTimeout with unsubscribe
-      setTimeout(() => {
-        setState(undefined);
-      }, 1000);
+      setState(undefined);
     }
-  };
+  }, [interval]);
+
+  React.useEffect(() => {
+    getData();
+  }, [interval, getData]);
 
   return { data, state };
 };

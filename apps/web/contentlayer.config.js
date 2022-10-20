@@ -24,7 +24,6 @@ export const Content = defineDocumentType(() => ({
       type: "string",
       resolve: (_) => readingTime(_.body.html).text,
     },
-    // TODO: rename files and append 001,002,... for the order
     path: {
       type: "json",
       resolve: (_) => {
@@ -41,6 +40,7 @@ export default makeSource({
   contentDirPath: "content",
   documentTypes: [Content],
   markdown: {
+    // TODO: include copy to clipboard button for code examples
     rehypePlugins: [
       rehypeHighlight,
       rehypeSlug,

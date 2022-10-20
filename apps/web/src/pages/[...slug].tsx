@@ -27,10 +27,8 @@ const ContentPage = ({
           {/* FIXME: check prose max width and extract and move h1/p our of prose */}
           <div className="prose prose-img:rounded-md">
             {/* DISCUSS: could be moved to # Heading 1 in the content body */}
-            <h1 className="text-4xl font-extrabold">{content?.title}</h1>
-            <p className="font-extralight pb-2 text-sm">
-              {content?.readingTime}
-            </p>
+            <h1 className="text-4xl mb-2 font-extrabold">{content?.title}</h1>
+            <p className="font-extralight text-sm">{content?.readingTime}</p>
             {content && (
               <div
                 ref={ref}

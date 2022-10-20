@@ -1,5 +1,5 @@
 ---
-title: "Getting Started a bit longer than expected"
+title: "Getting Started"
 date: "2022-10-10"
 ---
 
@@ -9,7 +9,7 @@ We have an npm package that allows you to add your own voting system on your web
 
 To use it, first install the package:
 
-```bash
+```shell
 $ npm install @mxkaske/use-vote
 ```
 
@@ -32,7 +32,7 @@ You can easily copy and paste the `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_RE
 
 ![upstash-api-keys.png](/assets/upstash-api-keys.png)
 
-```bash
+```
 // .env.local
 UPSTASH_REDIS_REST_URL=<YOUR_URL>
 UPSTASH_REDIS_REST_TOKEN=<YOUR_TOKEN>

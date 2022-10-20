@@ -2,6 +2,7 @@ import { defineConfig } from "tsup";
 
 export default defineConfig({
   entry: ["src/index.ts"],
+  // TODO: create different entries, like below
   // entry: {
   //   claps: "./components/claps/claps.tsx",
   //   api: "./components/claps/api.ts",

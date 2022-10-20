@@ -1,10 +1,10 @@
 import React from "react";
 
-const apiPath = `/api/vote`;
+const API_PATH = `/api/vote`;
 
 type VoteStatus = "waiting" | "loading" | "completed";
 
-const useVote = () => {
+const useVote = ({ apiPath = API_PATH }: { apiPath?: string }) => {
   const [status, setStatus] = React.useState<VoteStatus>("waiting");
   const vote = async (rating: string) => {
     setStatus("loading");

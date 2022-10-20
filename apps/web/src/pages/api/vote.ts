@@ -61,6 +61,7 @@ export default async function handler(
             (a, b) => (a.totalData.count > b.totalData.count ? -1 : 1)
             // TODO: also sort by alphabet, otherwise random
           );
+          // DISCUSS: is it possible to return the <Backend /> Component here?
           return res.status(200).json(array);
         }
         // FIXME: debug
