@@ -8,6 +8,11 @@ import { NextApiRequest, NextApiResponse } from "next";
 import parser from "ua-parser-js";
 import requestIp from "request-ip";
 
+// TODO: change Rating type
+type Rate = {
+  data: {}; // move to here
+};
+
 const validateBodyRequest = (body: unknown) => {
   return z
     .object({
@@ -106,7 +111,7 @@ export default async function handler(
           score: Date.now(),
           member: rate,
         });
-        return res.status(200).json({ ok: "OK" });
+        return res.status(200).json({ ...rate });
       }
       default: {
         return res.status(405).end(`Method ${req.method} Not Allowed.`);

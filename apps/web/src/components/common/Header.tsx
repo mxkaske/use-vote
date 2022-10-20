@@ -15,7 +15,7 @@ const Header = () => {
   const toggle = () => setIsOpen((prev) => !prev);
   return (
     <>
-      <div className="flex gap-4 sm:gap-8 items-center justify-between sticky top-0 bg-white bg-opacity-80 backdrop-filter backdrop-blur-lg w-full">
+      <div className="flex gap-4 sm:gap-8 items-center justify-between sticky top-0 bg-white bg-opacity-80 backdrop-filter backdrop-blur-lg w-full z-10">
         <div className="flex gap-4 sm:gap-8 py-4">
           {links.map(({ href, label }) => (
             <Link key={href} href={href}>

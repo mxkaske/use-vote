@@ -3,6 +3,7 @@ import cn from "classnames";
 import { default as ColorHash } from "color-hash";
 import crypto from "crypto";
 
+// - [ ] twitter post
 var customHash = function (str: string) {
   const strHash = crypto.createHash("sha512").update(str).digest("hex");
   let hash = 0;
@@ -22,10 +23,11 @@ interface Props {
   total: number;
   width: number; // deduced by intervalPercentag
   open: boolean;
-  rateData: any;
+  rateData: any; // FIXME: any
 }
 
 const BarContainer = ({ url, total, width, open, rateData }: Props) => {
+  const sortedData = rateData;
   return (
     <div className="group relative flex items-center justify-between px-2 py-1">
       <code>{url}</code>
