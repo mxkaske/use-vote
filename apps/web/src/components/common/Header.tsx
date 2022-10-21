@@ -2,6 +2,7 @@ import Link from "../ui/Link";
 import React from "react";
 import HamburgerIcon from "src/icons/HamburgerIcon";
 import Menu from "./Menu";
+import { useRouter } from "next/router";
 
 const links = [
   { href: "/", label: "Home" },
@@ -10,8 +11,8 @@ const links = [
 ];
 
 const Header = () => {
+  const router = useRouter();
   const [isOpen, setIsOpen] = React.useState(false);
-  console.log(isOpen);
   const toggle = () => setIsOpen((prev) => !prev);
   return (
     <>
@@ -23,13 +24,15 @@ const Header = () => {
             </Link>
           ))}
         </div>
-        <div className="block md:hidden">
-          <button onClick={toggle} className="">
-            <HamburgerIcon />
-          </button>
-        </div>
+        {router.asPath !== "/" && (
+          <div className="block md:hidden">
+            <button onClick={toggle} className="">
+              <HamburgerIcon />
+            </button>
+          </div>
+        )}
       </div>
-      <Menu open={isOpen} close={toggle} />
+      {router.asPath !== "/" && <Menu open={isOpen} close={toggle} />}
     </>
   );
 };

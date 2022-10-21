@@ -7,6 +7,8 @@ import SideBar from "./SideBar";
 // and add negative margins in the dialog
 
 const Menu = ({ open, close }: { open: boolean; close: () => void }) => {
+  // router = useRouter()
+  // TODO: check first slug (docs, examples,...) and filter allContents by pathname
   if (!open) {
     return <></>;
   }

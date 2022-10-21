@@ -1,3 +1,4 @@
+import Link from "src/components/ui/Link";
 import Stars from "src/components/widgets/Stars";
 import Layout from "../components/common/Layout";
 
@@ -11,9 +12,15 @@ const HomePage = () => {
           use-fdbk
         </h1>
         <p className="text-lg font-medium mb-2">
-          Enhance your <span className="font-bold">Next.js</span> project with a
-          self-hosted headless rating system. Powered by{" "}
-          <span className="font-bold">Upstash</span>.
+          Enhance your{" "}
+          <Link href="https://nextjs.org" className="font-bold">
+            Next.js
+          </Link>{" "}
+          project with a self-hosted headless rating system. Powered by{" "}
+          <Link href="https://upstash.com" className="font-bold">
+            Upstash
+          </Link>
+          .
         </p>
         <p className="text-lg font-medium mb-2">
           Use cases: Documentation, Knowledge Base,...
