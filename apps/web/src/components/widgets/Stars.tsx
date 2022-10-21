@@ -9,7 +9,7 @@ const starsArray = [...new Array(5).fill("⭐️")];
 // DISCUSS: how to transition between clicked and mouseleave until isCompleted
 
 const Stars = () => {
-  const [index, setIndex] = React.useState<number>(-1); // -1 means no index set
+  const [index, setIndex] = React.useState(-1); // -1 means no index set
   const { status, vote } = useVote({});
   const isCompleted = status === "completed";
 
@@ -30,10 +30,12 @@ const Stars = () => {
               <button
                 key={idx}
                 onClick={() => vote(rate)}
+                // DISCUSS: Somehow, this could be extracted into a hook
+                // or/and proper Component
                 onMouseEnter={() => setIndex(idx)}
                 onMouseLeave={() => setIndex(-1)}
                 className={cn(
-                  "p-2 rounded-full text-gray-600",
+                  "transition active:rotate-[72deg] p-2 rounded-full text-gray-600",
                   solid && "text-yellow-500"
                 )}
               >

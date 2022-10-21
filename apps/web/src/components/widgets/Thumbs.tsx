@@ -1,9 +1,15 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useVote } from "@use-vote/next";
 import ThumbsDownIcon from "../../icons/ThumbsDownIcon";
 import ThumbsUpIcon from "../../icons/ThumbsUpIcon";
+import ThumbsUpSolidIcon from "src/icons/ThumbsUpSolidIcon";
+import ThumbsDownSolidIcon from "src/icons/ThumbsDownSolidIcon";
+
+// FIMXE: hovering fast over thumbs sometimes misses the leave event
+// and stays SolidIcon after it left the Icon (and is then gray)
 
 const Thumbs = () => {
+  const [index, setIndex] = React.useState(-1);
   const { status, vote } = useVote({});
   const isCompleted = status === "completed";
 
@@ -18,15 +24,19 @@ const Thumbs = () => {
         <div className="flex gap-1">
           <button
             onClick={() => vote("👍")}
-            className="transition active:rotate-[-12deg] p-2 border border-transparent hover:border-gray-400 rounded-full text-gray-600 hover:text-gray-800"
+            onMouseEnter={() => setIndex(0)}
+            onMouseLeave={() => setIndex(-1)}
+            className="transition active:rotate-[-12deg] p-2 rounded-full text-gray-600 hover:text-green-500"
           >
-            <ThumbsUpIcon />
+            {index === 0 ? <ThumbsUpSolidIcon /> : <ThumbsUpIcon />}
           </button>
           <button
             onClick={() => vote("👎")}
-            className="transition active:rotate-[-12deg] p-2 border border-transparent hover:border-gray-400 rounded-full text-gray-600 hover:text-gray-800"
+            onMouseEnter={() => setIndex(1)}
+            onMouseLeave={() => setIndex(-1)}
+            className="transition active:rotate-[-12deg] p-2 rounded-full text-gray-600 hover:text-red-500"
           >
-            <ThumbsDownIcon />
+            {index === 1 ? <ThumbsDownSolidIcon /> : <ThumbsDownIcon />}
           </button>
         </div>
       )}

@@ -25,7 +25,8 @@ const ContentPage = ({
       <div className="flex min-h-max gap-8">
         <div className="overflow-auto">
           {/* FIXME: check prose max width and extract and move h1/p our of prose */}
-          <div className="prose prose-img:rounded-md">
+          {/* FIXME: How to make anchor element visible (hidden by the Header) */}
+          <div className="prose prose-img:rounded-md prose-pre:border prose-pre:border-gray-300">
             {/* DISCUSS: could be moved to # Heading 1 in the content body */}
             <h1 className="text-4xl mb-2 font-extrabold">{content?.title}</h1>
             <p className="font-extralight text-sm">{content?.readingTime}</p>
