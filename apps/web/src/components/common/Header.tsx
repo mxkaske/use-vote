@@ -25,7 +25,7 @@ const Header = () => {
             </Link>
           ))}
         </div>
-        {router.asPath !== "/" && (
+        {router.asPath !== "/" && router.asPath !== "/analytics" && (
           <div className="block md:hidden">
             <button onClick={toggle} className="">
               <HamburgerIcon />

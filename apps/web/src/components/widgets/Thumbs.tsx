@@ -26,7 +26,8 @@ const Thumbs = () => {
             onClick={() => vote("👍")}
             onMouseEnter={() => setIndex(0)}
             onMouseLeave={() => setIndex(-1)}
-            className="transition active:rotate-[-12deg] p-2 rounded-full text-gray-600 hover:text-green-500"
+            // REMINDER: `transition-transform` vs `transition` (including color transition)
+            className="transition-transform active:rotate-[-12deg] p-2 rounded-full text-gray-600 hover:text-green-500"
           >
             {index === 0 ? <ThumbsUpSolidIcon /> : <ThumbsUpIcon />}
           </button>
@@ -34,7 +35,7 @@ const Thumbs = () => {
             onClick={() => vote("👎")}
             onMouseEnter={() => setIndex(1)}
             onMouseLeave={() => setIndex(-1)}
-            className="transition active:rotate-[-12deg] p-2 rounded-full text-gray-600 hover:text-red-500"
+            className="transition transform active:rotate-[-12deg] p-2 rounded-full text-gray-600 hover:text-red-500"
           >
             {index === 1 ? <ThumbsDownSolidIcon /> : <ThumbsDownIcon />}
           </button>

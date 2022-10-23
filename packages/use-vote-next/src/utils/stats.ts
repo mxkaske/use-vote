@@ -1,5 +1,7 @@
 import { getTimeIntervals } from "./interval";
-import { Rating, Interval } from "./types";
+import { Rating, Interval } from "../types";
+
+// FIXME: REMINDER - THIS IS NOT THE CORRECT FILE
 
 // consider "👍", "👎" as default rating within "7d" interval
 // TODO: make the interval selectable

@@ -10,7 +10,7 @@ const Menu = ({ open, close }: { open: boolean; close: () => void }) => {
   // router = useRouter()
   // TODO: check first slug (docs, examples,...) and filter allContents by pathname
   if (!open) {
-    return <></>;
+    return null;
   }
   return (
     <div className="relative z-50">
@@ -26,7 +26,9 @@ const Menu = ({ open, close }: { open: boolean; close: () => void }) => {
               </button>
             </div>
             {/* TODO: include `contents` */}
-            <SideBar />
+            <div className="p-2 -mt-3">
+              <SideBar />
+            </div>
           </div>
         </div>
       </div>

@@ -35,7 +35,8 @@ const Stars = () => {
                 onMouseEnter={() => setIndex(idx)}
                 onMouseLeave={() => setIndex(-1)}
                 className={cn(
-                  "transition active:rotate-[72deg] p-2 rounded-full text-gray-600",
+                  // REMINDER: if only `transition`, the color would also transition with animation
+                  "transition-transform active:rotate-[72deg] p-2 rounded-full text-gray-600",
                   solid && "text-yellow-500"
                 )}
               >

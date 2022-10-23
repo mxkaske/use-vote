@@ -25,9 +25,9 @@ const HomePage = () => {
         <p className="text-lg font-medium mb-2">
           Use cases: Documentation, Knowledge Base,...
         </p>
-        <Stars />
-        {/* <div className="max-w-sm bg-gray-50 border border-gray-100 rounded-md px-3 py-2 mt-6">
-        </div> */}
+        <div className="max-w-md grid gap-2 bg-gray-50 border border-gray-200 rounded-md px-3 py-2 mt-6">
+          <Stars />
+        </div>
       </div>
     </Layout>
   );

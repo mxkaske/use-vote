@@ -18,7 +18,10 @@ const ContentPage = ({
         document.getElementById(id)?.setAttribute("class", "group");
       }
     });
-  }, []);
+    // REMINDER: empty deps array will not trigger an effect on slug page change.
+  }, [content, dirContent]);
+
+  console.log("render");
 
   return (
     <Layout>
