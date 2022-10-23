@@ -5,9 +5,11 @@ import { Disclosure } from "@headlessui/react";
 import { Interval } from "src/utils/types";
 import cn from "classnames";
 // FIXME: deployment failed
-// import { Backend } from "@use-vote/next";
+import { Backend } from "@use-vote/next";
 import BarContainer from "src/components/charts/BarContainer";
 import DataContainer from "src/components/charts/DataContainer";
+//
+import "@use-vote/next/dist/build.css";
 
 // TODO: check about if the page should be styled with tailwindcss or not
 
@@ -41,7 +43,7 @@ const Analytics = () => {
 
   return (
     <Layout>
-      {/* <Backend /> */}
+      <Backend />
       <h1 className="text-3xl font-extrabold mb-6">Analytics</h1>
       <div className="space-y-8">
         <div className="space-y-3">
