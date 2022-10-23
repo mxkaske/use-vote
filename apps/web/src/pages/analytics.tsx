@@ -1,22 +1,29 @@
 import React from "react";
 import Layout from "../components/common/Layout";
-import dynamic from "next/dynamic";
 import useStats from "../hooks/useStats";
 import { Disclosure } from "@headlessui/react";
 import { Interval } from "src/utils/types";
-import { colorHash } from "src/utils/color";
 import cn from "classnames";
 // FIXME: deployment failed
 // import { Backend } from "@use-vote/next";
-import { formatDistance } from "date-fns";
-
-const Chart = dynamic(() => import("../components/charts/StackedAreaChart"), {
-  ssr: false,
-});
+import BarContainer from "src/components/charts/BarContainer";
+import DataContainer from "src/components/charts/DataContainer";
 
 // TODO: check about if the page should be styled with tailwindcss or not
-// - [ ] allow { colors: Record<string, string> } attribute to customize colors.
-// otherwise, use colorHash
+
+type Colors = Record<string, string>;
+
+const config = {
+  colors: {
+    "👍": "#6366f1",
+    "👎": "#f43f5e",
+    "⭐️": "#ef4444",
+    "⭐️⭐️": "#f97316",
+    "⭐️⭐️⭐️": "#eab308",
+    "⭐️⭐️⭐️⭐️": "#84cc16",
+    "⭐️⭐️⭐️⭐️⭐️": "#22c55e",
+  },
+};
 
 const Analytics = () => {
   const [interval, setInterval] = React.useState<Interval>("7d");
@@ -65,10 +72,12 @@ const Analytics = () => {
                 Empty State. Check out{" "}
                 <a href="use-fdbk.vercel.app" target="_blank" rel="noopener">
                   use-fdbk.vercel.app
-                </a>
+                </a>{" "}
+                for help.
               </p>
             </div>
           )}
+          {/* Loading Skeleton */}
           {!data && state === "loading" && (
             <div className="w-full flex flex-col gap-3">
               {[...Array(5)].map((_, i) => (
@@ -94,89 +103,24 @@ const Analytics = () => {
                   disabled={intervalTotal === 0}
                 >
                   {({ open }) => (
-                    // TODO: FIXME: replace with <BarContainer />
-                    <div className="group relative flex items-center justify-between px-2 py-1">
-                      <code>{value.baseData.url}</code>
-                      {/* The total amount could move out of the bar */}
-                      <p>{intervalTotal}</p>
-                      <div className="absolute w-full h-full bg-gray-50 z-[-1] -my-1 -mx-2 rounded-md" />
-                      <div
-                        style={{ width: `${intervalPercentage * 100}%` }}
-                        className={cn(
-                          "transition-[width] duration-1000 absolute h-full z-[-1] -my-1 -mx-2 rounded-md",
-                          open
-                            ? "bg-gray-300"
-                            : "bg-gray-200 group-hover:bg-gray-300"
-                        )}
-                      />
-                      <div
-                        style={{
-                          width: open ? `${intervalPercentage * 100}%` : 0,
-                        }}
-                        className="transition-[width] duration-1000 absolute w-full h-full z-[-1] -my-1 -mx-2 rounded-md overflow-hidden flex"
-                      >
-                        {Object.entries(rateData)
-                          .sort((a, b) => (a[0] > b[0] ? -1 : 1))
-                          .map(([key, entry], i) => {
-                            const percentage = entry / intervalTotal;
-                            return (
-                              <div
-                                key={i}
-                                style={{
-                                  width: `${percentage * 100}%`,
-                                  backgroundColor: colorHash.hex(key),
-                                }}
-                                className="h-full"
-                              ></div>
-                            );
-                          })}
-                      </div>
-                    </div>
+                    <BarContainer
+                      colors={config.colors}
+                      url={value.baseData.url}
+                      total={intervalTotal}
+                      width={`${intervalPercentage * 100}%`}
+                      open={open}
+                      rateData={rateData}
+                    />
                   )}
                 </Disclosure.Button>
-                <Disclosure.Panel className="mb-6">
-                  <div className="flex items-center justify-between gap-4">
-                    <div>
-                      <p className="font-bold text-xl">Data</p>
-                      <div className="flex gap-4 items-center">
-                        {/* FIXME: reason because it jumps: the key either changes, or automatically gets unmounted as no accIntervalData has been found */}
-                        {Object.entries(rateData)
-                          .sort((a, b) => (a[0] > b[0] ? -1 : 1))
-                          .map(([key, value], i) => {
-                            return (
-                              <div
-                                key={key}
-                                className="flex items-center gap-2"
-                              >
-                                <div
-                                  style={{
-                                    backgroundColor: colorHash.hex(key),
-                                  }}
-                                  className="h-4 w-4 rounded-full"
-                                />
-                                <p>
-                                  {key}:{" "}
-                                  <span className="font-bold">{value}</span>
-                                </p>
-                              </div>
-                            );
-                          })}
-                      </div>
-                    </div>
-                    {rawData.length > 0 && (
-                      <div className="text-right">
-                        <p className="font-light text-sm">last created</p>
-                        <p className="font-medium text-sm">
-                          {formatDistance(
-                            new Date(rawData[rawData.length - 1].timestamp), // get last data
-                            new Date(),
-                            { addSuffix: true }
-                          )}
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                  {/* <Chart data={value.accIntervalData} interval={interval} /> */}
+                <Disclosure.Panel>
+                  {Object.keys(rateData).length > 0 && (
+                    <DataContainer
+                      colors={config.colors}
+                      rawData={rawData}
+                      rateData={rateData}
+                    />
+                  )}
                 </Disclosure.Panel>
               </Disclosure>
             );

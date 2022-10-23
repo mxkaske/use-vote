@@ -63,7 +63,13 @@ export default async function handler(
             array.push({ ...data, baseData: pages[key] as Page });
           });
           array.sort(
-            (a, b) => (a.totalData.count > b.totalData.count ? -1 : 1)
+            (a, b) => {
+              if (a.totalData.count === b.totalData.count) {
+                return a.baseData.url > b.baseData.url ? 1 : -1;
+              } else {
+                return a.totalData.count > b.totalData.count ? -1 : 1;
+              }
+            }
             // TODO: also sort by alphabet, otherwise random
           );
           // DISCUSS: is it possible to return the <Backend /> Component here?
