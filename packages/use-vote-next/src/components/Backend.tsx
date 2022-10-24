@@ -18,7 +18,7 @@ const config = {
     "⭐️⭐️⭐️⭐️": "#84cc16",
     "⭐️⭐️⭐️⭐️⭐️": "#22c55e",
   },
-};
+}; // satisfies { colors: Colors }
 
 const Backend = () => {
   const [interval, setInterval] = React.useState<Interval>("7d");
