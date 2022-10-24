@@ -1,12 +1,10 @@
 import * as React from "react";
 import * as Collapsible from "@radix-ui/react-collapsible";
 import useVoteAnalytics from "../hooks/useVoteAnalytics";
-import { colorHash } from "../utils/color";
+import { strToColor } from "../utils/color";
 import cn from "classnames";
 import { formatDistance } from "date-fns";
 import { Interval } from "../types";
-
-type Colors = Record<string, string>;
 
 const config = {
   colors: {
@@ -108,7 +106,7 @@ const Backend = () => {
                             key={key}
                             style={{
                               width: `${percentage * 100}%`,
-                              backgroundColor: color || colorHash.hex(key),
+                              backgroundColor: color || strToColor(key),
                             }}
                             className="relative transition-[width] duration-500 h-full"
                           ></div>
@@ -126,14 +124,13 @@ const Backend = () => {
                     <div className="flex gap-4 items-center">
                       {/* FIXME: reason because it jumps: the key either changes, or automatically gets unmounted as no accIntervalData has been found */}
                       {rateData?.map(({ key, value }, i) => {
+                        const color =
+                          config.colors[key as keyof typeof config.colors];
                         return (
                           <div key={key} className="flex items-center gap-2">
                             <div
                               style={{
-                                backgroundColor:
-                                  config.colors[
-                                    key as keyof typeof config.colors
-                                  ] || colorHash.hex(key),
+                                backgroundColor: color || strToColor(key),
                               }}
                               className="h-4 w-4 rounded-full"
                             />

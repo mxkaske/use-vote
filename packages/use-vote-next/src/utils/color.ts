@@ -1,15 +1,12 @@
-import { default as ColorHash } from "color-hash";
 import crypto from "crypto";
 
-var customHash = function (str: string) {
+export const strToColor = (str: string) => {
   const strHash = crypto.createHash("sha512").update(str).digest("hex");
   let hash = 0;
   for (let i = 0; i < strHash.length; i++) {
-    const chr = strHash.charCodeAt(i);
-    hash = (hash << 5) - hash + chr;
-    hash |= 0; // Convert to 32bit integer
+    hash = strHash.charCodeAt(i) + ((hash << 6) - hash);
+    hash = hash & hash;
   }
-  return Math.abs(hash);
+  const shorten = hash % 360;
+  return `hsl(${shorten},100%,50%)`;
 };
-
-export const colorHash = new ColorHash({ hash: customHash });
